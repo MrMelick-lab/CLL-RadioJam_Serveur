@@ -4,15 +4,17 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui network
 
 TARGET = Radio_Jam_Serveur
 TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        radio_jam_serveur.cpp
+        radio_jam_serveur.cpp \
+    threadclient.cpp
 
-HEADERS  += radio_jam_serveur.h
+HEADERS  += radio_jam_serveur.h \
+    threadclient.h
 
 FORMS    += radio_jam_serveur.ui

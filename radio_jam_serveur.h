@@ -2,6 +2,8 @@
 #define RADIO_JAM_SERVEUR_H
 
 #include <QMainWindow>
+#include <QTcpSocket>
+#include <QTcpServer>
 
 namespace Ui {
     class Radio_Jam_Serveur;
@@ -17,6 +19,14 @@ public:
 
 private:
     Ui::Radio_Jam_Serveur *ui;
+    QTcpServer* m_serveur;
+
+private slots:
+    void on_btnDemArr_clicked();
+
+    void nouveauClient();
+
+    void ajoutClient(QByteArray);
 };
 
 #endif // RADIO_JAM_SERVEUR_H
