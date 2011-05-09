@@ -33,11 +33,13 @@ void Radio_Jam_Serveur::nouveauClient()
     QTcpSocket* socketClient = m_serveur->nextPendingConnection();
     threadclient* nouveauThread = new threadclient(socketClient);
     nouveauThread->start();
-    connect(nouveauThread, SIGNAL(ajoutClient(QByteArray)), this, SLOT(ajoutClient(QByteArray)));
-    //m_listeThread.append(nouveauThread);
+    connect(nouveauThread, SIGNAL(ajoutClientVersPrinc(QByteArray)), this, SLOT(ajoutClient(QByteArray)));
+    connect(this, SIGNAL(creationNouveauClient(QByteArray)), nouveauThread, SLOT(creationNouveauClient(QByteArray)));
 }
 
 void Radio_Jam_Serveur::ajoutClient(QByteArray b)
 {
+   //Envoie les infos à tous les threads réceptions en cours pour que chaque clients créent un nouveau thread de réception.
+    emit(creationNouveauClient(b));
 
 }

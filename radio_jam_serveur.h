@@ -27,6 +27,10 @@ private slots:
     void nouveauClient();
 
     void ajoutClient(QByteArray);
+
+signals:
+    void creationNouveauClient(QByteArray);
+
 };
 
 #endif // RADIO_JAM_SERVEUR_H

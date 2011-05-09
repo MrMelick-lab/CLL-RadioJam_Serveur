@@ -4,6 +4,7 @@ threadclient::threadclient(QTcpSocket* socket)
 {
     m_socket = socket;
     m_EnCours = false;
+    m_recepteur = new QTcpServer();
 }
 
 void threadclient::run()
@@ -23,7 +24,7 @@ void threadclient::run()
             baReception.append(m_socket->readAll());//Réception du no d'instrument
 
             //Ajout du nouveau client à la liste
-            emit(ajoutClient(baReception));
+            emit(ajoutClientVersPrinc(baReception));
             m_EnCours = true;
         }
     }
@@ -31,6 +32,19 @@ void threadclient::run()
 
 
     while(m_EnCours){
-        //écoute les notes envoyées par le client et les transmet à tous les autres
+        //écoute les notes et les envoyes (avec un signal)
+        //envoyer à partir de ce socket: m_socketRecepteur
+
     }
+}
+
+void threadclient::creationNouveauClient(QByteArray b)
+{
+    m_socket->write("N");
+    m_socket->write(QString(b.at(0)).toAscii());
+    m_socket->write(QString(b.at(1)).toAscii());
+
+    m_recepteur->listen(QHostAddress::Any, 22224);
+    if(m_recepteur->waitForNewConnection(30000))
+        m_socketRecepteur = m_recepteur->nextPendingConnection();
 }

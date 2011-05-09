@@ -3,6 +3,7 @@
 
 #include <QThread>
 #include <QTcpSocket>
+#include <QTcpServer>
 
 class threadclient : public QThread
 {
@@ -14,11 +15,15 @@ protected:
     void run();
 
 private:
-    QTcpSocket* m_socket;
+    QTcpSocket* m_socket, *m_socketRecepteur;
+    QTcpServer* m_recepteur;
     bool m_EnCours;
 
 signals:
-    void ajoutClient(QByteArray);
+    void ajoutClientVersPrinc(QByteArray);
+
+private slots:
+    void creationNouveauClient(QByteArray);
 };
 
 #endif // THREADCLIENT_H
