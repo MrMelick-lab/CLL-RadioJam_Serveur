@@ -10,6 +10,7 @@ class threadclient : public QThread
     Q_OBJECT
 public:
     threadclient(QTcpSocket*);
+    bool m_EnCours;
 
 protected:
     void run();
@@ -17,7 +18,6 @@ protected:
 private:
     QTcpSocket* m_socket, *m_socketRecepteur;
     QTcpServer* m_recepteur;
-    bool m_EnCours;
 
 signals:
     void ajoutClientVersPrinc(QByteArray);

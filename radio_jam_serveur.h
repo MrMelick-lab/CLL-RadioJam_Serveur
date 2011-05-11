@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QTcpSocket>
 #include <QTcpServer>
+#include "threadclient.h"
 
 namespace Ui {
     class Radio_Jam_Serveur;
@@ -20,6 +21,7 @@ public:
 private:
     Ui::Radio_Jam_Serveur *ui;
     QTcpServer* m_serveur;
+    QList<threadclient *> m_listeThread;
 
 private slots:
     void on_btnDemArr_clicked();
@@ -27,6 +29,7 @@ private slots:
     void nouveauClient();
 
     void ajoutClient(QByteArray);
+
 
 signals:
     void creationNouveauClient(QByteArray);

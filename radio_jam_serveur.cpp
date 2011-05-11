@@ -1,6 +1,6 @@
 #include "radio_jam_serveur.h"
 #include "ui_radio_jam_serveur.h"
-#include "threadclient.h"
+
 
 Radio_Jam_Serveur::Radio_Jam_Serveur(QWidget *parent) :
     QMainWindow(parent),
@@ -23,6 +23,10 @@ void Radio_Jam_Serveur::on_btnDemArr_clicked()
         ui->btnDemArr->setText("Arreter le serveur");
     }
     else{
+        for(int i = 0; m_listeThread.size() > i; i++){
+            if(m_listeThread[i]->isRunning())
+                m_listeThread[i]->m_EnCours = false;
+        }
         m_serveur->close();
         ui->btnDemArr->setText("Demarrer le serveur");
     }
@@ -30,16 +34,18 @@ void Radio_Jam_Serveur::on_btnDemArr_clicked()
 
 void Radio_Jam_Serveur::nouveauClient()
 {
-    QTcpSocket* socketClient = m_serveur->nextPendingConnection();
-    threadclient* nouveauThread = new threadclient(socketClient);
+    threadclient * nouveauThread = new threadclient(m_serveur->nextPendingConnection());
+    m_listeThread.append(nouveauThread);
+
+    //nouveauThread->isRunning()
+    //connect(nouveauThread, SIGNAL(ajoutClientVersPrinc(QByteArray)), this, SLOT(ajoutClient(QByteArray)));
+    //connect(this, SIGNAL(creationNouveauClient(QByteArray)), nouveauThread, SLOT(creationNouveauClient(QByteArray)));
     nouveauThread->start();
-    connect(nouveauThread, SIGNAL(ajoutClientVersPrinc(QByteArray)), this, SLOT(ajoutClient(QByteArray)));
-    connect(this, SIGNAL(creationNouveauClient(QByteArray)), nouveauThread, SLOT(creationNouveauClient(QByteArray)));
 }
 
 void Radio_Jam_Serveur::ajoutClient(QByteArray b)
 {
    //Envoie les infos à tous les threads réceptions en cours pour que chaque clients créent un nouveau thread de réception.
-    emit(creationNouveauClient(b));
+    //emit(creationNouveauClient(b));
 
 }
