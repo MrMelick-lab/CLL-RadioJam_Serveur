@@ -18,12 +18,14 @@ protected:
 private:
     QTcpSocket* m_socket, *m_socketRecepteur;
     QTcpServer* m_recepteur;
+    //bool m_attenteCreation;
 
 signals:
-    void ajoutClientVersPrinc(QByteArray);
+    void ajoutClientVersPrinc(QByteArray, QByteArray);
+    void PtArr(QString, QString);
 
 private slots:
-    void creationNouveauClient(QByteArray);
+    void creationNouveauClient(QByteArray, QByteArray);
 };
 
 #endif // THREADCLIENT_H

@@ -28,11 +28,13 @@ private slots:
 
     void nouveauClient();
 
-    void ajoutClient(QByteArray);
+    void ajoutClient(QByteArray, QByteArray);
+
+    void PtArrThread(QString, QString);
 
 
 signals:
-    void creationNouveauClient(QByteArray);
+    void creationNouveauClient(QByteArray, QByteArray);
 
 };
 
