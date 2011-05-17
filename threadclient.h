@@ -11,6 +11,7 @@ class threadclient : public QThread
 public:
     threadclient(QTcpSocket*);
     bool m_EnCours;
+    bool m_attenteConnexion;
 
 protected:
     void run();
@@ -18,14 +19,11 @@ protected:
 private:
     QTcpSocket* m_socket, *m_socketRecepteur;
     QTcpServer* m_recepteur;
-    //bool m_attenteCreation;
 
 signals:
-    void ajoutClientVersPrinc(QByteArray, QByteArray);
+    void EnvoieNote(char);
     void PtArr(QString, QString);
 
-private slots:
-    void creationNouveauClient(QByteArray, QByteArray);
 };
 
 #endif // THREADCLIENT_H

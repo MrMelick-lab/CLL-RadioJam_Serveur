@@ -5,7 +5,7 @@ threadclient::threadclient(QTcpSocket* socket)
     m_socket = socket;
     m_EnCours = false;
     m_recepteur = new QTcpServer();
-    //m_attenteCreation = true;
+    m_attenteConnexion = true;
 }
 
 void threadclient::run()
@@ -36,21 +36,20 @@ void threadclient::run()
             variable.setValue(baInstru);
             emit(PtArr("instru", variable.toString()));
 
-            //Ajout du nouveau client à la liste
-            //emit(ajoutClientVersPrinc(baNom, baInstru));
+            /*//Ajout du nouveau client à la liste
+            emit(ajoutClientVersPrinc(baNom, baInstru));*/
             m_EnCours = true;
         }
     }
 
-    /*while(m_attenteCreation)
+    while(m_attenteConnexion)
     {
-        //boucle qui attent que la création du thread de réception soit terminé.
-    }*/
-
-
+        //attend que la connexion avec le thread_envois soit établi
+    }
     while(m_EnCours){
         //écoute les notes et les envoyes (avec un signal)
         //envoyer à partir de ce socket: m_socketRecepteur
+
         if(m_socket->waitForReadyRead(1000))
         {
             baReception.append(m_socket->read(1));
@@ -58,6 +57,16 @@ void threadclient::run()
             {
                 m_EnCours = false;
                 quitter = false;
+            }
+            else if(baReception.at(0) == 'M')//Changement d'instrument
+            {
+                //Seulement dans la version payante du serveur RadioJam (5000$ CAN)
+            }
+            else//Sinon c'est une note qu'il envoie
+            {
+                emit EnvoieNote(baReception.at(0));
+                variable.setValue(baReception.at(0));
+                emit PtArr("Recoie une note", variable.toString());
             }
             baReception.clear();
         }
@@ -73,24 +82,4 @@ void threadclient::run()
     }
     m_socket->close();
 
-}
-
-void threadclient::creationNouveauClient(QByteArray nom, QByteArray instru)
-{
-    /*m_socket->write("N");
-    m_socket->waitForBytesWritten();
-    m_socket->write(QString(nom.at(0)).toAscii());
-    m_socket->waitForBytesWritten();
-    m_socket->write(QString(instru.at(1)).toAscii());
-    m_socket->waitForBytesWritten();
-
-    emit PtArr("Creation en cours", "attente de connexion");
-
-    m_recepteur->listen(QHostAddress::Any, 22224);
-    if(m_recepteur->waitForNewConnection(30000))
-    {
-        m_socketRecepteur = m_recepteur->nextPendingConnection();
-        emit PtArr("Creation en cours", "connexion etabli");
-    }
-    m_attenteCreation = false;*/
 }
