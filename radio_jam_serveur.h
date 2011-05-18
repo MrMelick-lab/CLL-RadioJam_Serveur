@@ -35,9 +35,13 @@ private slots:
 
     void nouveauRecepteur();
 
+    void ajoutDUnClient(QByteArray, QByteArray);
+
 
 signals:
     void creationNouveauClient(QByteArray, QByteArray);
+
+    void informationsNouveauClient(QByteArray, QByteArray);
 
 };
 

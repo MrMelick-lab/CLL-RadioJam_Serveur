@@ -21,8 +21,12 @@ private:
     QTcpServer* m_recepteur;
 
 signals:
-    void EnvoieNote(char);
+    void EnvoieNote(int);
     void PtArr(QString, QString);
+    void ajoutClientVersPrinc(QByteArray, QByteArray);
+
+private slots:
+        void unNouveauClientCestConnecte(QByteArray, QByteArray);
 
 };
 

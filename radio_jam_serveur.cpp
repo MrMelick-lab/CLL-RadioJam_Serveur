@@ -48,7 +48,14 @@ void Radio_Jam_Serveur::nouveauClient()
     threadclient * nouveauThread = new threadclient(m_serveur->nextPendingConnection());
     m_listeThread.append(nouveauThread);
 
+    //MessageBox pour les testes
     connect(nouveauThread, SIGNAL(PtArr(QString, QString)), this, SLOT(PtArrThread(QString, QString)));
+
+    //Recois les informations du nouveau client
+    connect(nouveauThread, SIGNAL(ajoutClientVersPrinc(QByteArray,QByteArray)), this, SLOT(ajoutDUnClient(QByteArray,QByteArray)));
+    //Transmet les informations des nouveaux clients a tous les threads
+    connect(this, SIGNAL(informationsNouveauClient(QByteArray,QByteArray)), nouveauThread, SLOT(unNouveauClientCestConnecte(QByteArray,QByteArray)));
+
     nouveauThread->start();
 }
 
@@ -57,11 +64,18 @@ void Radio_Jam_Serveur::nouveauRecepteur()
     thread_envois* nouveauThreadEnv = new thread_envois(m_serveurEnv->nextPendingConnection());
     m_listeThreadEnv.append(nouveauThreadEnv);
     int id = m_listeThreadEnv.size() - 1;
-    connect(m_listeThread[id], SIGNAL(EnvoieNote(char)), m_listeThreadEnv[id], SLOT(EnvoieNote(char)));
+    connect(m_listeThread[id], SIGNAL(EnvoieNote(int)), m_listeThreadEnv[id], SLOT(EnvoieNote(int)));
     m_listeThread[id]->m_attenteConnexion = false;
+    connect(nouveauThreadEnv, SIGNAL(PtArr(QString, QString)), this, SLOT(PtArrThread(QString, QString)));
 }
 
 void Radio_Jam_Serveur::PtArrThread(QString titre, QString message)
 {
     QMessageBox::information(this, titre, message);
+}
+
+void Radio_Jam_Serveur::ajoutDUnClient(QByteArray nom, QByteArray instru)
+{
+    //transmet les informations des nouveaux clients à tous les threads client
+    emit informationsNouveauClient(nom, instru);
 }

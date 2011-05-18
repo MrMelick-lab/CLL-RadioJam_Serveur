@@ -36,8 +36,8 @@ void threadclient::run()
             variable.setValue(baInstru);
             emit(PtArr("instru", variable.toString()));
 
-            /*//Ajout du nouveau client à la liste
-            emit(ajoutClientVersPrinc(baNom, baInstru));*/
+            //Ajout du nouveau client à la liste
+            emit ajoutClientVersPrinc(baNom, baInstru);
             m_EnCours = true;
         }
     }
@@ -67,6 +67,7 @@ void threadclient::run()
                 emit EnvoieNote(baReception.at(0));
                 variable.setValue(baReception.at(0));
                 emit PtArr("Recoie une note", variable.toString());
+                variable.clear();
             }
             baReception.clear();
         }
@@ -82,4 +83,12 @@ void threadclient::run()
     }
     m_socket->close();
 
+}
+
+void threadclient::unNouveauClientCestConnecte(QByteArray nom, QByteArray instru)
+{
+    m_socket->write("N");
+    m_socket->waitForBytesWritten();
+    m_socket->write(nom + instru);
+    m_socket->waitForBytesWritten();
 }
