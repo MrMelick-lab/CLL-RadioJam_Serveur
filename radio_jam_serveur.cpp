@@ -16,6 +16,7 @@ Radio_Jam_Serveur::Radio_Jam_Serveur(QWidget *parent) :
 
 Radio_Jam_Serveur::~Radio_Jam_Serveur()
 {
+    //force la fermeture des threads existant
     for(int i = 0; m_listeThread.size() > i; i++){
         m_listeThread[i]->quit();
     }
@@ -25,6 +26,7 @@ Radio_Jam_Serveur::~Radio_Jam_Serveur()
     delete ui;
 }
 
+//slot sur le boutton qui permet de démarrer et arrêter le serveur
 void Radio_Jam_Serveur::on_btnDemArr_clicked()
 {
     if(ui->btnDemArr->text() == "Demarrer le serveur"){
@@ -43,6 +45,7 @@ void Radio_Jam_Serveur::on_btnDemArr_clicked()
     }
 }
 
+//Un nouveau client se connecte, le threadclient est créé
 void Radio_Jam_Serveur::nouveauClient()
 {
     threadclient * nouveauThread = new threadclient(m_serveur->nextPendingConnection());
@@ -59,6 +62,7 @@ void Radio_Jam_Serveur::nouveauClient()
     nouveauThread->start();
 }
 
+//Création d'un nouveau thread de réception
 void Radio_Jam_Serveur::nouveauRecepteur()
 {
     thread_envois* nouveauThreadEnv = new thread_envois(m_serveurEnv->nextPendingConnection());
@@ -69,13 +73,17 @@ void Radio_Jam_Serveur::nouveauRecepteur()
     connect(nouveauThreadEnv, SIGNAL(PtArr(QString, QString)), this, SLOT(PtArrThread(QString, QString)));
 }
 
+//slot qui affiche un messagebox, utiliser pour les testes
 void Radio_Jam_Serveur::PtArrThread(QString titre, QString message)
 {
     QMessageBox::information(this, titre, message);
 }
 
+//transmet les informations des nouveaux clients à tous les threads client
 void Radio_Jam_Serveur::ajoutDUnClient(QByteArray nom, QByteArray instru)
 {
-    //transmet les informations des nouveaux clients à tous les threads client
     emit informationsNouveauClient(nom, instru);
 }
+
+
+//fermeture

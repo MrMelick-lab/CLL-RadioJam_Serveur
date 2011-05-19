@@ -22,8 +22,8 @@ void threadclient::run()
         QByteArray baNom, baInstru;
         baNom.append(m_socket->readAll());//Réception du nom
 
-        variable.setValue(baNom);
-        emit(PtArr("nom", variable.toString()));
+        /*variable.setValue(baNom);
+        emit(PtArr("nom", variable.toString()));*/
 
         //Peut-être ajouter une validation plus tard ici, pour savoir si le nom est déjà utilisé
 
@@ -33,8 +33,8 @@ void threadclient::run()
         if(m_socket->waitForReadyRead(1000)){
             baInstru.append(m_socket->readAll());//Réception du no d'instrument
 
-            variable.setValue(baInstru);
-            emit(PtArr("instru", variable.toString()));
+            /*variable.setValue(baInstru);
+            emit(PtArr("instru", variable.toString()));*/
 
             //Ajout du nouveau client à la liste
             emit ajoutClientVersPrinc(baNom, baInstru);
@@ -57,6 +57,8 @@ void threadclient::run()
             {
                 m_EnCours = false;
                 quitter = false;
+
+                //signal au thread d'envoie de se fermer
             }
             else if(baReception.at(0) == 'M')//Changement d'instrument
             {
@@ -65,9 +67,9 @@ void threadclient::run()
             else//Sinon c'est une note qu'il envoie
             {
                 emit EnvoieNote(baReception.at(0));
-                variable.setValue(baReception.at(0));
+                /*variable.setValue(baReception.at(0));
                 emit PtArr("Recoie une note", variable.toString());
-                variable.clear();
+                variable.clear();*/
             }
             baReception.clear();
         }
